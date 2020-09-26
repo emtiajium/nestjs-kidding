@@ -18,7 +18,7 @@ describe('/hello', () => {
     await app.close();
   });
 
-  describe('/', () => {
+  describe('GET /', () => {
     it('should return "Hello, World!"', () => {
       return request(app.getHttpServer())
         .get('/hello')
