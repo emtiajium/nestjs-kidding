@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import UserService from '@/services/UserService';
+import * as uuid from 'uuid';
 
 interface IUser {
   id: string;
@@ -13,5 +14,12 @@ export default class HelloController {
   @Get()
   getUsers(): Promise<IUser[]> {
     return this.userService.getUsers();
+  }
+
+  @Post()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async createUser(@Body() user: IUser): Promise<string> {
+    // TODO pass ${user} to the service
+    return uuid.v4();
   }
 }
