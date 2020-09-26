@@ -14,8 +14,11 @@ export default class HelloController {
 
   @Post()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async createUser(@Body() user: User): Promise<string> {
+  async createUser(@Body() user: User): Promise<User> {
     // TODO pass ${user} to the service
-    return uuid.v4();
+    return {
+      ...user,
+      id: uuid.v4(),
+    };
   }
 }
