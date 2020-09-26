@@ -112,34 +112,10 @@ module.exports = {
     },
     {
       files: [
-        'src/**/*{Service,Handler,Adapter,Controller,Middleware,Factory,Provider,Dispatcher,Consumer,Manager,Builder}.ts',
+        'src/**/*{Service,Handler,Adapter,Controller,Middleware,Factory,Provider,Manager,Builder}.ts',
       ],
       rules: {
         'class-methods-use-this': 'off',
-      },
-    },
-    {
-      files: [
-        'src/commons/queue/ConsumerManager.ts',
-        'src/commons/queue/EventDispatcher.ts',
-        'src/commons/queue/QueuePoller.ts',
-        'src/commons/queue/InfrastructureHelper.ts',
-        'src/commons/test/consumers/ConsumerTestBuilder.ts',
-      ],
-      rules: {
-        'node/no-process-env': 'off',
-        'no-param-reassign': 'off',
-        'new-cap': 'off',
-        'node/callback-return': 'off',
-      },
-    },
-    {
-      files: ['scripts/**/*.ts'],
-      rules: {
-        'node/no-process-env': 'off',
-        'no-console': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
       },
     },
   ],
