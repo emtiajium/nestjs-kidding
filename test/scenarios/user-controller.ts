@@ -3,7 +3,7 @@ import UserModule from '@/modules/UserModule';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
-describe('UserController', () => {
+describe('/users', () => {
   let app: INestApplication;
   beforeAll(async () => {
     const PORT = 9877;
@@ -18,7 +18,7 @@ describe('UserController', () => {
     await app.close();
   });
 
-  describe('root', () => {
+  describe('User controller testing', () => {
     it('should return 200 OK', () => {
       return request(app.getHttpServer())
         .get('/users')
@@ -26,6 +26,16 @@ describe('UserController', () => {
         .expect(response => {
           expect(response.body).toBeDefined();
         });
+    });
+
+    it('should return 400 BAD REQUEST When username is not an email', () => {
+      const payload = {
+        username: 'hello',
+      };
+      return request(app.getHttpServer())
+        .post('/users')
+        .send(payload)
+        .expect(400);
     });
   });
 });
