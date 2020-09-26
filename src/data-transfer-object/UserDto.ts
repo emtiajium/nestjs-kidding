@@ -1,8 +1,9 @@
-import { IsEmail, IsUUID } from 'class-validator';
+import { IsEmail, IsOptional, IsUUID } from 'class-validator';
 
 export default class User {
+  @IsOptional()
   @IsUUID()
-  id?: string;
+  id: string;
 
   @IsEmail()
   username: string;
