@@ -14,6 +14,10 @@ describe('UserController', () => {
     await bootstrap();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('root', () => {
     it('should return "Hello World!"', () => {
       return request(app.getHttpServer())
