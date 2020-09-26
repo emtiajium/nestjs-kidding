@@ -18,7 +18,7 @@ describe('/users', () => {
     await app.close();
   });
 
-  describe('User controller testing', () => {
+  describe('GET /', () => {
     it('should return 200 OK', () => {
       return request(app.getHttpServer())
         .get('/users')
@@ -27,7 +27,9 @@ describe('/users', () => {
           expect(response.body).toBeDefined();
         });
     });
+  });
 
+  describe('POST /', () => {
     it('should return 400 BAD REQUEST When username is not an email', () => {
       const payload = {
         username: 'hello',
