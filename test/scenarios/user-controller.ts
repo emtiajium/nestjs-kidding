@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import UserModule from '@/modules/User';
+import HelloModule from '@/modules/HelloModule';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
@@ -8,7 +8,7 @@ describe('UserController', () => {
   beforeAll(async () => {
     const PORT = 9877;
     async function bootstrap(): Promise<void> {
-      app = await NestFactory.create(UserModule);
+      app = await NestFactory.create(HelloModule);
       await app.listen(PORT);
     }
     await bootstrap();
@@ -19,12 +19,12 @@ describe('UserController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
+    it('should return "Hello, World!"', () => {
       return request(app.getHttpServer())
-        .get('/')
+        .get('/hello')
         .expect(200)
         .expect(response => {
-          expect(response.text).toBe('Hello World!');
+          expect(response.text).toBe('Hello, World!');
         });
     });
   });
