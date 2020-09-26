@@ -3,7 +3,7 @@ import HelloModule from '@/modules/HelloModule';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
-describe('UserController', () => {
+describe('/hello', () => {
   let app: INestApplication;
   beforeAll(async () => {
     const PORT = 9877;
@@ -18,7 +18,7 @@ describe('UserController', () => {
     await app.close();
   });
 
-  describe('root', () => {
+  describe('/', () => {
     it('should return "Hello, World!"', () => {
       return request(app.getHttpServer())
         .get('/hello')
