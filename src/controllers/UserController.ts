@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
-import * as uuid from 'uuid';
 
 @Controller('/users')
 export default class HelloController {
@@ -14,10 +13,6 @@ export default class HelloController {
 
   @Post()
   async createUser(@Body() user: User): Promise<User> {
-    // TODO pass ${user} to the service
-    return {
-      ...user,
-      id: uuid.v4(),
-    };
+    return this.userService.createUser(user);
   }
 }

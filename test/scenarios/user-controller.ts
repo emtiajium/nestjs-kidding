@@ -39,5 +39,19 @@ describe('/users', () => {
         .send(payload)
         .expect(400);
     });
+
+    it('should return 201 CREATED When username is an email', () => {
+      const payload = {
+        username: 'hello@email.com',
+      };
+      return request(app.getHttpServer())
+        .post('/users')
+        .send(payload)
+        .expect(201)
+        .expect(({ body: user }) => {
+          expect(user).toBeDefined();
+          expect(user.id).toBeDefined();
+        });
+    });
   });
 });
