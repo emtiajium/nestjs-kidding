@@ -4,7 +4,7 @@ import User from '@/data-transfer-object/UserDto';
 import { validate } from 'class-validator';
 
 @Injectable()
-export default class HelloService {
+export default class UserService {
   async getUsers(): Promise<User[]> {
     return [
       { id: uuid.v4(), username: 'user1@email.com' },

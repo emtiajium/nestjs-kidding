@@ -3,7 +3,7 @@ import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
 
 @Controller('/users')
-export default class HelloController {
+export default class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
