@@ -2,14 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import { validate } from 'class-validator';
+import users from '@/mocks/users';
 
 @Injectable()
 export default class UserService {
   async getUsers(): Promise<User[]> {
-    return [
-      { id: uuid.v4(), username: 'user1@email.com' },
-      { id: uuid.v4(), username: 'user2@email.com' },
-    ];
+    return users;
   }
 
   async createUser(user: User): Promise<User> {
