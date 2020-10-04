@@ -4,6 +4,8 @@ import User from '@/data-transfer-object/UserDto';
 
 @Controller('/users')
 export default class UserController {
+  // no need to create instance with `new` [this.userService = new UserService();]
+  // magic of @Injectable()
   constructor(private readonly userService: UserService) {}
 
   @Get()
