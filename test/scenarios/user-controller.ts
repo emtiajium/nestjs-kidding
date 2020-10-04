@@ -18,9 +18,7 @@ describe('/users', () => {
     await bootstrap();
   });
 
-  // beforeEach(() => {
-  //   (EmailService as jest.Mock).mockClear();
-  // });
+  beforeEach(() => {});
 
   afterAll(async () => {
     await app.close();
@@ -59,10 +57,11 @@ describe('/users', () => {
     });
 
     it('should return 201 CREATED When username is an email', () => {
-      (EmailService as jest.Mock).mockImplementationOnce(() => ({
-        sendEmail: (): Promise<boolean> => Promise.resolve(true),
-        sendAccountOpeningEmail: (): Promise<boolean> => Promise.resolve(true),
-      }));
+      // (EmailService as jest.Mock).mockImplementation(() => ({
+      //   sendEmail: (): Promise<boolean> => Promise.resolve(true),
+      // }));
+      const sendEmailMock = jest.spyOn(new EmailService(), 'sendEmail');
+      sendEmailMock.mockImplementation((): Promise<boolean> => Promise.resolve(true));
       const payload = {
         username: 'hello@example.com',
       };
