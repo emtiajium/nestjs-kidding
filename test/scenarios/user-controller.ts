@@ -2,6 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import UserModule from '@/modules/UserModule';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import EmailService from '@/services/EmailService';
+
+jest.setTimeout(10000);
+jest.mock('@/services/EmailService');
 
 describe('/users', () => {
   let app: INestApplication;
@@ -13,6 +17,10 @@ describe('/users', () => {
     }
     await bootstrap();
   });
+
+  // beforeEach(() => {
+  //   (EmailService as jest.Mock).mockClear();
+  // });
 
   afterAll(async () => {
     await app.close();
@@ -40,7 +48,21 @@ describe('/users', () => {
         .expect(400);
     });
 
+    it.skip('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is missing', () => {
+      const payload = {
+        username: 'hello@email.com',
+      };
+      return request(app.getHttpServer())
+        .post('/users')
+        .send(payload)
+        .expect(500);
+    });
+
     it('should return 201 CREATED When username is an email', () => {
+      (EmailService as jest.Mock).mockImplementationOnce(() => ({
+        sendEmail: (): Promise<boolean> => Promise.resolve(true),
+        sendAccountOpeningEmail: (): Promise<boolean> => Promise.resolve(true),
+      }));
       const payload = {
         username: 'hello@email.com',
       };
