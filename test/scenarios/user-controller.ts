@@ -50,7 +50,7 @@ describe('/users', () => {
 
     it.skip('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is missing', () => {
       const payload = {
-        username: 'hello@email.com',
+        username: 'hello@example.com',
       };
       return request(app.getHttpServer())
         .post('/users')
@@ -64,7 +64,7 @@ describe('/users', () => {
         sendAccountOpeningEmail: (): Promise<boolean> => Promise.resolve(true),
       }));
       const payload = {
-        username: 'hello@email.com',
+        username: 'hello@example.com',
       };
       return request(app.getHttpServer())
         .post('/users')
