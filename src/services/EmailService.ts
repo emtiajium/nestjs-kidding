@@ -5,7 +5,7 @@ import Email from '@/data-transfer-object/EmailDto';
 @Injectable()
 export default class EmailService {
   constructor() {
-    sgMail.setApiKey('INVALID_API_KEY');
+    sgMail.setApiKey('SG.INVALID_API_KEY');
   }
 
   async sendEmail(email: Email): Promise<boolean> {
