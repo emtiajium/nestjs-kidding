@@ -5,7 +5,6 @@ import Email from '@/data-transfer-object/EmailDto';
 @Injectable()
 export default class EmailService {
   async sendEmail(email: Email): Promise<boolean> {
-    console.log('email', email);
     try {
       await sgMail.send(email);
     } catch (error) {
@@ -22,7 +21,7 @@ export default class EmailService {
       to: email,
       from: 'test@example.com',
       subject: 'Welcome!',
-      body: `<p>You've activated your account.</p>`,
-    } as Email);
+      html: `<p>You've activated your account.</p>`,
+    });
   }
 }

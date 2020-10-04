@@ -11,9 +11,5 @@ export default class Email {
   subject: string;
 
   @IsString()
-  body: string;
-
-  get html(): string {
-    return this.body;
-  }
+  html: string;
 }
