@@ -5,7 +5,6 @@ import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
 
 jest.setTimeout(10000);
-// jest.mock('@/services/EmailService');
 
 describe('/users', () => {
   let app: INestApplication;
@@ -59,11 +58,8 @@ describe('/users', () => {
     });
 
     it('should return 201 CREATED When username is an email', () => {
-      // (EmailService as jest.Mock).mockImplementation(() => ({
-      //   sendEmail: (): Promise<boolean> => Promise.resolve(true),
-      // }));
-      const sendEmailMock = jest
-        .spyOn(new EmailService(), 'sendEmail')
+      const sendEmailMock: jest.SpyInstance = jest
+        .spyOn(EmailService.prototype, 'sendEmail')
         .mockImplementation((): Promise<boolean> => Promise.resolve(true));
       const payload = {
         username: 'hello@example.com',
