@@ -5,7 +5,7 @@ import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
 
 jest.setTimeout(10000);
-jest.mock('@/services/EmailService');
+// jest.mock('@/services/EmailService');
 
 describe('/users', () => {
   let app: INestApplication;
@@ -19,6 +19,8 @@ describe('/users', () => {
   });
 
   beforeEach(() => {});
+
+  afterEach(() => {});
 
   afterAll(async () => {
     await app.close();
@@ -46,7 +48,7 @@ describe('/users', () => {
         .expect(400);
     });
 
-    it.skip('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is missing', () => {
+    it('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is missing', () => {
       const payload = {
         username: 'hello@example.com',
       };
@@ -60,8 +62,9 @@ describe('/users', () => {
       // (EmailService as jest.Mock).mockImplementation(() => ({
       //   sendEmail: (): Promise<boolean> => Promise.resolve(true),
       // }));
-      const sendEmailMock = jest.spyOn(new EmailService(), 'sendEmail');
-      sendEmailMock.mockImplementation((): Promise<boolean> => Promise.resolve(true));
+      const sendEmailMock = jest
+        .spyOn(new EmailService(), 'sendEmail')
+        .mockImplementation((): Promise<boolean> => Promise.resolve(true));
       const payload = {
         username: 'hello@example.com',
       };
@@ -72,6 +75,7 @@ describe('/users', () => {
         .expect(({ body: user }) => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
+          sendEmailMock.mockRestore();
         });
     });
   });
