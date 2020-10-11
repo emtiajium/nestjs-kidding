@@ -1,25 +1,16 @@
-import { NestFactory } from '@nestjs/core';
 import UserModule from '@/modules/UserModule';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
+import bootstrap from '@/bootstrap';
 
 jest.setTimeout(10000);
 
 describe('/users', () => {
   let app: INestApplication;
   beforeAll(async () => {
-    const PORT = 9877;
-    async function bootstrap(): Promise<void> {
-      app = await NestFactory.create(UserModule);
-      await app.listen(PORT);
-    }
-    await bootstrap();
+    app = await bootstrap(UserModule);
   });
-
-  beforeEach(() => {});
-
-  afterEach(() => {});
 
   afterAll(async () => {
     await app.close();
