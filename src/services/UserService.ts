@@ -4,7 +4,6 @@ import User from '@/data-transfer-object/UserDto';
 import { validate } from 'class-validator';
 import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
-import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export default class UserService {
@@ -25,7 +24,9 @@ export default class UserService {
 
   async validateCreateUser(user: User): Promise<boolean> {
     // very bad approach but ok for now
-    const errors = await validate(plainToClass(User, user));
+    const newUser = new User();
+    newUser.username = user.username;
+    const errors = await validate(newUser);
     if (errors.length > 0) {
       throw new BadRequestException(errors);
     }
