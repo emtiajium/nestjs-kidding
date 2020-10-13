@@ -14,9 +14,11 @@ export default class UserService {
 
   async createUser(user: User): Promise<User> {
     await this.emailService.sendAccountOpeningEmail(user.username);
-    return {
+    const newUser = {
       ...user,
       id: uuid.v4(),
     };
+    users.push(newUser);
+    return newUser;
   }
 }
