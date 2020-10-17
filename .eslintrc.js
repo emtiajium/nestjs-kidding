@@ -111,6 +111,14 @@ module.exports = {
       },
     },
     {
+      files: ['src/logger/*.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-param-reassign': 'off',
+        'no-console': 'off',
+      },
+    },
+    {
       files: ['test/**/*.ts'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
