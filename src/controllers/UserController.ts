@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
-import logged from '@/logger/logged';
+import Logged from '@/logger/logged';
 
 @Controller('/users')
 export default class UserController {
@@ -15,7 +15,7 @@ export default class UserController {
   }
 
   @Post()
-  @logged
+  @Logged()
   async createUser(@Body() user: User): Promise<User> {
     return this.userService.createUser(user);
   }
