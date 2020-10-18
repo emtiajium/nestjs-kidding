@@ -4,8 +4,6 @@ import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
 
-jest.setTimeout(10000);
-
 describe('/users', () => {
   let app: INestApplication;
   beforeAll(async () => {
