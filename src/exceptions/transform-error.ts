@@ -1,14 +1,24 @@
-// class-validator's validate() return too much data which is not needed normally
+// class-validator's validate() return too much info which are not needed normally
 // NestJS also uses class-validator (see, https://docs.nestjs.com/techniques/validation)
-// but it transform the error in a more readable format
+// but it transforms the error in a more readable format using @UsePipes(new ValidationPipe())
 
 // here, transformError() mimics the same behavior
 // copied from https://github.com/nestjs/nest/blob/master/packages/common/pipes/validation.pipe.ts
 // modified a bit to pacify es-lint :D
 
 // use like below:
+
 // import { validate } from 'class-validator';
-// transformError(await validate(plainToClass(p1, p2)));
+// transformError(await validate(plainToClass(P1, p2)));
+
+// or
+
+// import { validateOrReject } from 'class-validator';
+// try {
+//   await validateOrReject(plainToClass(P1, p2));
+// } catch (error) {
+//   transformError(error);
+// }
 
 import { ValidationError } from 'class-validator/types/validation/ValidationError';
 import { iterate } from 'iterare';
@@ -52,6 +62,7 @@ function flattenValidationErrors(validationErrors: ValidationError[]): string[] 
 export default function transformError(error: ValidationError[]): boolean {
   if (error.length > 0) {
     // ;)
+    // BadRequestException because of
     // new ValidationPipe({ errorHttpStatusCode: HttpStatus.BAD_REQUEST });
     throw new BadRequestException(flattenValidationErrors(error));
   }
