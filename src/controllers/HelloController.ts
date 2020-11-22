@@ -3,10 +3,10 @@ import HelloService from '@/services/HelloService';
 
 @Controller('/hello')
 export default class HelloController {
-  constructor(private readonly userService: HelloService) {}
+  constructor(private readonly helloService: HelloService) {}
 
   @Get()
   getHello(): string {
-    return this.userService.getHello();
+    return this.helloService.getHello();
   }
 }
