@@ -2,6 +2,9 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Pre-requisite
+Node v14 LTS
+
 ## Installation
 
 ```bash
