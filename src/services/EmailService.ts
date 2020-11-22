@@ -1,8 +1,7 @@
 import * as sgMail from '@sendgrid/mail';
-import { Injectable } from '@nestjs/common';
 import Email from '@/data-transfer-object/EmailDto';
+import EmailException from '@/exceptions/EmailException';
 
-@Injectable()
 export default class EmailService {
   constructor() {
     sgMail.setApiKey('SG.INVALID_API_KEY');
@@ -12,10 +11,10 @@ export default class EmailService {
     try {
       await sgMail.send(email);
     } catch (error) {
-      if (error.response) {
-        throw new Error(`Email error: ${error.response.body.errors[0].message}`);
-      }
-      throw new Error(`Email error: ${error.message}`);
+      throw new EmailException(
+        'Something went wrong!',
+        error.response ? error.response.body.errors[0].message : error.message,
+      );
     }
     return true;
   }

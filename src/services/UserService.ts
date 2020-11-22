@@ -1,13 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import { validate } from 'class-validator';
 import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
+import UserCreationException from '@/exceptions/UserCreationException';
 
-@Injectable()
 export default class UserService {
-  constructor(private readonly emailService: EmailService) {}
+  private readonly emailService: EmailService;
+
+  constructor() {
+    this.emailService = new EmailService();
+  }
 
   async getUsers(): Promise<User[]> {
     return users;
@@ -30,7 +33,7 @@ export default class UserService {
     newUser.username = user.username;
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      throw new BadRequestException(errors);
+      throw new UserCreationException('Something went wrong!', errors);
     }
     return true;
   }
