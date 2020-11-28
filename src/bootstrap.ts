@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 
 const PORT = 0;
 async function bootstrap(module: any): Promise<INestApplication> {
-  const app = await NestFactory.create(module);
+  const app: INestApplication = await NestFactory.create(module);
   // to avoid putting @UsePipes(new ValidationPipe()) at every route
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT);
