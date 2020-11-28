@@ -9,7 +9,7 @@ jest.setTimeout(10000);
 describe('/users', () => {
   let app: INestApplication;
   beforeAll(async () => {
-    const PORT = 9877;
+    const PORT = 0;
     async function bootstrap(): Promise<void> {
       app = await NestFactory.create(UserModule);
       await app.listen(PORT);
