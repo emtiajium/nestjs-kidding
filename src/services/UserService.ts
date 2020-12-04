@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import users from '@/mocks/users';
@@ -13,6 +13,7 @@ export default class UserService {
   }
 
   async createUser(user: User): Promise<User> {
+    // TODO add validation to avoid multiple users with same username
     await this.emailService.sendAccountOpeningEmail(user.username);
     const newUser = {
       ...user,
@@ -20,5 +21,22 @@ export default class UserService {
     };
     users.push(newUser);
     return newUser;
+  }
+
+  private findUser(userId: string): User {
+    return users.find(user => user.id === userId);
+  }
+
+  private isUserExist(userId: string): boolean {
+    return !!this.findUser(userId);
+  }
+
+  updateUser(user: User): User {
+    if (this.isUserExist(user.id) === false) {
+      throw new NotFoundException('User not found');
+    }
+    const updatedUser = Object.assign(user, this.findUser(user.id));
+    users[users.findIndex(({ id: userId }) => userId === user.id)] = updatedUser;
+    return updatedUser;
   }
 }
