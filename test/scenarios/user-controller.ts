@@ -5,6 +5,7 @@ import * as uuid from 'uuid';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
 import User from '@/data-transfer-object/UserDto';
+import { getAllUsers } from '@/mocks/users';
 
 async function createUser(app, payload): Promise<User> {
   return request(app.getHttpServer())
@@ -25,6 +26,7 @@ function backToOriginalSendEmailImplementation(sendEmailMock): void {
 
 describe('/users', () => {
   let app: INestApplication;
+
   beforeAll(async () => {
     app = await bootstrap(UserModule);
   });
@@ -77,6 +79,7 @@ describe('/users', () => {
         .expect(({ body: user }) => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
+          expect(!!getAllUsers().find(eachUser => eachUser.username === payload.username)).toBe(true);
           backToOriginalSendEmailImplementation(sendEmailMock);
         });
     });
@@ -112,6 +115,7 @@ describe('/users', () => {
       };
       const sendEmailMock = mockSendEmail();
       const createdUser = await createUser(app, payload);
+      backToOriginalSendEmailImplementation(sendEmailMock);
       const userId = createdUser.id;
       return request(app.getHttpServer())
         .put(`/users/${userId}`)
@@ -120,7 +124,33 @@ describe('/users', () => {
           expect(response.status).toBe(200);
           expect(response.body.id).toBe(userId);
           expect(response.body.username).toBe(payload.username);
-          backToOriginalSendEmailImplementation(sendEmailMock);
+        });
+    });
+  });
+
+  describe('DELETE /:userId', () => {
+    it('SHOULD throw 404 NOT FOUND When provide user id does not exist', () => {
+      const userId = 'I am not a uuid';
+      return request(app.getHttpServer())
+        .delete(`/users/${userId}`)
+        .expect(404)
+        .expect(response => response.body.message === 'User not found');
+    });
+
+    it('SHOULD return 200 OK When provide payload is okay', async () => {
+      const payload = {
+        username: 'nerddevs@example.com',
+      };
+      const sendEmailMock = mockSendEmail();
+      const createdUser = await createUser(app, payload);
+      backToOriginalSendEmailImplementation(sendEmailMock);
+      const userId = createdUser.id;
+      return request(app.getHttpServer())
+        .delete(`/users/${userId}`)
+        .send()
+        .then(response => {
+          expect(response.status).toBe(200);
+          expect(!!getAllUsers().find(user => user.id === userId)).toBe(false);
         });
     });
   });

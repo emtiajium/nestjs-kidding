@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
 import Logged from '@/logger/logged';
@@ -26,5 +26,10 @@ export default class UserController {
       ...user,
       id: userId,
     });
+  }
+
+  @Delete('/:userId')
+  removeUser(@Param('userId') userId: string): void {
+    return this.userService.removeUser(userId);
   }
 }
