@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
 import User from '@/data-transfer-object/UserDto';
-import { getAllUsers as findAllUsers } from '@/mocks/users';
+import UserRepository from '@/mocks/UserRepository';
 
 async function createUser(app, payload): Promise<User> {
   return request(app.getHttpServer())
@@ -33,6 +33,8 @@ function backToOriginalSendEmailImplementation(sendEmailMock: jest.SpyInstance):
 
 describe('/users', () => {
   let app: INestApplication;
+
+  const findAllUsers = new UserRepository().getAllUsers;
 
   beforeAll(async () => {
     app = await bootstrap(UserModule);
