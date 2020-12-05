@@ -3,6 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
+import User from '@/data-transfer-object/UserDto';
+import users from '@/mocks/users';
+import * as uuid from 'uuid';
 
 describe('/users', () => {
   let app: INestApplication;
@@ -61,6 +64,94 @@ describe('/users', () => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
           sendEmailMock.mockRestore();
+        });
+    });
+  });
+
+  describe('PUT', () => {
+    const targetUser: User = { username: 'delwar@example.com', id: uuid.v4() };
+    beforeAll(() => {
+      users.push(targetUser);
+    });
+
+    afterAll(() => {
+      const userIndex = users.findIndex(user => user.id === targetUser.id);
+      users.splice(userIndex, 1);
+    });
+
+    it('should update username', () => {
+      const payload = {
+        username: 'delwar2@example.com',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${targetUser.id}`)
+        .send(payload)
+        .expect(200)
+        .expect(response => {
+          const updatedUser = response.body;
+          expect(updatedUser).toBeDefined();
+          expect(updatedUser.username).toEqual('delwar2@example.com');
+        });
+    });
+    it('should not update username- username already exists', () => {
+      const payload = {
+        username: 'user1@example.com',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${targetUser.id}`)
+        .send(payload)
+        .expect(404)
+        .expect(response => {
+          const errorDetail = response.body;
+          expect(errorDetail.statusCode).toBe(404);
+          expect(errorDetail.message).toEqual('Username already exists');
+        });
+    });
+
+    it('should not update username- User not found', () => {
+      const payload = {
+        username: 'delwar2@example.com',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${uuid.v4()}`)
+        .send(payload)
+        .expect(400)
+        .expect(response => {
+          const errorDetail = response.body;
+          expect(errorDetail.statusCode).toBe(400);
+          expect(errorDetail.message).toEqual('User not found');
+        });
+    });
+  });
+
+  describe('Delete', () => {
+    const targetUser: User = { username: 'delwar@example.com', id: uuid.v4() };
+    beforeAll(() => {
+      users.push(targetUser);
+    });
+
+    afterAll(() => {
+      const userIndex = users.findIndex(user => user.id === targetUser.id);
+      users.splice(userIndex, 1);
+    });
+
+    it('should not delete user: user not found', () => {
+      return request(app.getHttpServer())
+        .delete(`/users/${uuid.v4()}`)
+        .expect(400)
+        .expect(response => {
+          const errorDetail = response.body;
+          expect(errorDetail.statusCode).toBe(400);
+          expect(errorDetail.message).toEqual('User not found');
+        });
+    });
+
+    it('should delete user', () => {
+      return request(app.getHttpServer())
+        .delete(`/users/${targetUser.id}`)
+        .expect(204)
+        .expect(response => {
+          expect(response.body).toEqual({});
         });
     });
   });
