@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
 import User from '@/data-transfer-object/UserDto';
-import { getAllUsers } from '@/mocks/users';
+import { getAllUsers as findAllUsers } from '@/mocks/users';
 
 async function createUser(app, payload): Promise<User> {
   return request(app.getHttpServer())
@@ -27,7 +27,7 @@ function mockSendEmail(): jest.SpyInstance {
     .mockImplementation((): Promise<boolean> => Promise.resolve(true));
 }
 
-function backToOriginalSendEmailImplementation(sendEmailMock): void {
+function backToOriginalSendEmailImplementation(sendEmailMock: jest.SpyInstance): void {
   sendEmailMock.mockRestore();
 }
 
@@ -75,7 +75,7 @@ describe('/users', () => {
     });
 
     it('should return 201 CREATED When username is an email', () => {
-      const numberOfUsersBeforeMakingRequest = getAllUsers().length;
+      const numberOfUsersBeforeMakingRequest = findAllUsers().length;
       const sendEmailMock = mockSendEmail();
       const payload = {
         username: 'hello@example.com',
@@ -87,7 +87,7 @@ describe('/users', () => {
         .expect(async ({ body: user }) => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
-          expect(!!getAllUsers().find(eachUser => eachUser.username === payload.username)).toBe(true);
+          expect(!!findAllUsers().find(eachUser => eachUser.username === payload.username)).toBe(true);
           // API request to ensure! haha!!
           const numberOfUsersAfterMakingRequest = (await getUsers(app)).length;
           expect(numberOfUsersAfterMakingRequest).toBe(numberOfUsersBeforeMakingRequest + 1);
@@ -161,7 +161,7 @@ describe('/users', () => {
         .send()
         .then(response => {
           expect(response.status).toBe(200);
-          expect(!!getAllUsers().find(user => user.id === userId)).toBe(false);
+          expect(!!findAllUsers().find(user => user.id === userId)).toBe(false);
         });
     });
   });
