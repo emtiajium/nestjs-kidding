@@ -3,17 +3,15 @@
 import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 
-let users = []; // global variable
+let users: User[] = []; // users table / collection (actually, a global variable!)
 
-function createUsers(): void {
+// insert few users at the time of app initialization
+(function createUsers(): void {
   const totalUsers = 5;
   for (let i = 0; i < totalUsers; i++) {
     users.push({ id: uuid.v4(), username: `user${i + 1}@example.com` });
   }
-}
-
-// insert few users
-createUsers();
+})();
 
 function getAllUsers(): User[] {
   return users;
@@ -24,7 +22,7 @@ function findUser(userId: string): User {
 }
 
 function addUser(user: User): User {
-  const newUser = {
+  const newUser: User = {
     ...user,
     id: uuid.v4(),
   };
