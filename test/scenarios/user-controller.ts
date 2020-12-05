@@ -14,7 +14,14 @@ async function createUser(app, payload): Promise<User> {
     .then(({ body: user }) => user);
 }
 
+async function getUsers(app): Promise<User[]> {
+  return request(app.getHttpServer())
+    .get('/users')
+    .then(({ body: users }) => users);
+}
+
 function mockSendEmail(): jest.SpyInstance {
+  // Object.getPrototypeOf(new EmailService() or EmailService.prototype
   return jest
     .spyOn(EmailService.prototype, 'sendEmail')
     .mockImplementation((): Promise<boolean> => Promise.resolve(true));
@@ -57,7 +64,7 @@ describe('/users', () => {
         .expect(400);
     });
 
-    it('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is missing', () => {
+    it('should throw 500 INTERNAL SERVER ERROR When Sendgrid credential is invalid', () => {
       const payload = {
         username: 'hello@example.com',
       };
@@ -68,6 +75,7 @@ describe('/users', () => {
     });
 
     it('should return 201 CREATED When username is an email', () => {
+      const numberOfUsersBeforeMakingRequest = getAllUsers().length;
       const sendEmailMock = mockSendEmail();
       const payload = {
         username: 'hello@example.com',
@@ -76,19 +84,22 @@ describe('/users', () => {
         .post('/users')
         .send(payload)
         .expect(201)
-        .expect(({ body: user }) => {
+        .expect(async ({ body: user }) => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
           expect(!!getAllUsers().find(eachUser => eachUser.username === payload.username)).toBe(true);
+          // API request to ensure! haha!!
+          const numberOfUsersAfterMakingRequest = (await getUsers(app)).length;
+          expect(numberOfUsersAfterMakingRequest).toBe(numberOfUsersBeforeMakingRequest + 1);
           backToOriginalSendEmailImplementation(sendEmailMock);
         });
     });
   });
 
   describe('PUT /:userId', () => {
-    it('SHOULD throw 400 BAD REQUEST When provide username is not an email', () => {
+    it('SHOULD throw 400 BAD REQUEST When provided username is not an email', () => {
       const payload = {
-        username: "I'm not an email",
+        username: `I'm not an email`,
       };
       const userId = uuid.v4();
       return request(app.getHttpServer())
@@ -97,11 +108,11 @@ describe('/users', () => {
         .expect(400);
     });
 
-    it('SHOULD throw 404 NOT FOUND When provide user id does not exist', () => {
+    it('SHOULD throw 404 NOT FOUND When provided user id does not exist', () => {
       const payload = {
         username: 'hello@example.com',
       };
-      const userId = 'I am not a uuid';
+      const userId = uuid.v4();
       return request(app.getHttpServer())
         .put(`/users/${userId}`)
         .send(payload)
@@ -109,7 +120,7 @@ describe('/users', () => {
         .expect(response => response.body.message === 'User not found');
     });
 
-    it('SHOULD return 200 OK When provide payload is okay', async () => {
+    it('SHOULD return 200 OK When provided payload is okay', async () => {
       const payload = {
         username: 'nerddevs@example.com',
       };
@@ -129,15 +140,15 @@ describe('/users', () => {
   });
 
   describe('DELETE /:userId', () => {
-    it('SHOULD throw 404 NOT FOUND When provide user id does not exist', () => {
-      const userId = 'I am not a uuid';
+    it('SHOULD throw 404 NOT FOUND When provided user id does not exist', () => {
+      const userId = uuid.v4();
       return request(app.getHttpServer())
         .delete(`/users/${userId}`)
         .expect(404)
         .expect(response => response.body.message === 'User not found');
     });
 
-    it('SHOULD return 200 OK When provide payload is okay', async () => {
+    it('SHOULD return 200 OK When provided payload is okay', async () => {
       const payload = {
         username: 'nerddevs@example.com',
       };
