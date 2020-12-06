@@ -28,7 +28,7 @@ export default class UserController {
 
   @Delete(':userId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @logged()
+  @Logged()
   async deleteUser(@Param('userId') userId: string): Promise<void> {
     return this.userService.deleteUser(userId);
   }
