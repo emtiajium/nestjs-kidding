@@ -27,6 +27,7 @@ export default class UserService {
     if (this.isUserExist(user.id) === false) {
       throw new NotFoundException('User not found');
     }
+    // TODO what about username hijacking?
     return this.userRepository.updateUser(user);
   }
 
