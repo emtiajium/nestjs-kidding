@@ -21,7 +21,7 @@ async function getUsers(app): Promise<User[]> {
 }
 
 function mockSendEmail(): jest.SpyInstance {
-  // Object.getPrototypeOf(new EmailService() or EmailService.prototype
+  // Object.getPrototypeOf(new EmailService()) or EmailService.prototype
   return jest
     .spyOn(EmailService.prototype, 'sendEmail')
     .mockImplementation((): Promise<boolean> => Promise.resolve(true));
