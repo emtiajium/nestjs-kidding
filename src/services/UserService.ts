@@ -3,11 +3,19 @@ import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
-import { Console } from 'console';
 
 @Injectable()
 export default class UserService {
   constructor(private readonly emailService: EmailService) {}
+
+  private isExistUserId(userId: string): number {
+    const userIndex = users.findIndex(item => item.id === userId);
+
+    if (userIndex === -1) {
+      throw new NotFoundException();
+    }
+    return userIndex;
+  }
 
   async getUsers(): Promise<User[]> {
     return users;
@@ -24,21 +32,13 @@ export default class UserService {
   }
 
   async updateUserById(userId: string, user: User): Promise<User> {
-    const userIndex = users.findIndex(item => item.id === userId);
-
-    if (userIndex === -1) {
-      throw new NotFoundException();
-    }
+    const userIndex = this.isExistUserId(userId);
     users[userIndex] = user;
     return users[userIndex];
   }
 
   async deleteUserById(userId: string): Promise<string> {
-    const userIndex = users.findIndex(item => item.id === userId);
-
-    if (userIndex === -1) {
-      throw new NotFoundException();
-    }
+    const userIndex = this.isExistUserId(userId);
     const { username } = users[userIndex];
     users.splice(userIndex, 1);
 
