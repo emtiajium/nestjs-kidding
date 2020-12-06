@@ -3,6 +3,7 @@ import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
+import { Console } from 'console';
 
 @Injectable()
 export default class UserService {
@@ -38,7 +39,9 @@ export default class UserService {
     if (userIndex === -1) {
       throw new NotFoundException();
     }
+    const { username } = users[userIndex];
+    users.splice(userIndex, 1);
 
-    return `${users[userIndex].username} has been deleted`;
+    return `${username} has been deleted`;
   }
 }

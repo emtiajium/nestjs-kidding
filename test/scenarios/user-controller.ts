@@ -6,6 +6,8 @@ import bootstrap from '@/bootstrap';
 import * as uuid from 'uuid';
 import users from '@/mocks/users';
 
+const randomUserId = uuid.v4();
+
 describe('/users', () => {
   let app: INestApplication;
   beforeAll(async () => {
@@ -68,8 +70,8 @@ describe('/users', () => {
   });
 
   describe('PUT /:userId', () => {
-    const userId = uuid.v4();
     const userIndex = 0;
+    const userId = users[userIndex].id;
 
     it('should return 400 BAD REQUEST When username is not an email', () => {
       const payload = {
@@ -86,7 +88,7 @@ describe('/users', () => {
         username: 'hello@example.com',
       };
       return request(app.getHttpServer())
-        .put(`/users/${userId}`)
+        .put(`/users/${randomUserId}`)
         .send(payload)
         .expect(404);
     });
@@ -96,33 +98,34 @@ describe('/users', () => {
         username: 'hello@example.com',
       };
       return request(app.getHttpServer())
-        .put(`/users/${users[userIndex].id}`)
+        .put(`/users/${userId}`)
         .send(payload)
         .expect(200)
         .expect(({ body: user }) => {
           expect(user).toBeDefined();
-          expect(user.id).toBe(users[userIndex].id);
+          expect(user.id).toBe(userId);
           expect(user.username).toBe(payload.username);
         });
     });
   });
 
   describe('DELETE /:userId', () => {
-    const userId = uuid.v4();
-    const userIndex = 0;
+    const userIndex = 1;
+    const userId = users[userIndex].id;
+    const { username } = users[userIndex];
 
     it('should return 404 NOT FOUND When userId is not present in database', () => {
       return request(app.getHttpServer())
-        .delete(`/users/${userId}`)
+        .delete(`/users/${randomUserId}`)
         .expect(404);
     });
 
     it('should return 200 OK When userId is present in database', () => {
       return request(app.getHttpServer())
-        .delete(`/users/${users[userIndex].id}`)
+        .delete(`/users/${userId}`)
         .expect(200)
         .expect(response => {
-          expect(response.text).toBe(`${users[userIndex].username} has been deleted`);
+          expect(response.text).toBe(`${username} has been deleted`);
         });
     });
   });
