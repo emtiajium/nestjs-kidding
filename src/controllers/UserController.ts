@@ -2,7 +2,6 @@ import { Body, Param, Controller, HttpCode, Get, Post, Put, Delete, HttpStatus }
 import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
 import Logged from '@/logger/logged';
-import logged from '@/logger/logged';
 
 @Controller('/users')
 export default class UserController {
