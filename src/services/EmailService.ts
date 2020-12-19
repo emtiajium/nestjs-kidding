@@ -2,6 +2,9 @@ import * as sgMail from '@sendgrid/mail';
 import { Injectable } from '@nestjs/common';
 import Email from '@/data-transfer-object/EmailDto';
 
+// TODO adapter + service
+// service should be blind of Sendgrid
+
 @Injectable()
 export default class EmailService {
   constructor() {
