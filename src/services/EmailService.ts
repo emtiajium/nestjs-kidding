@@ -17,7 +17,7 @@ export default class EmailService {
     } catch (error) {
       // TODO EmailException
       throw new InternalServerErrorException([
-        `Email error: ${error.response ? error.response.body.errors[0].message : error.message}`,
+        `Email error: ${error.response?.body?.errors[0]?.message || error.message}`,
       ]);
     }
     return true;
