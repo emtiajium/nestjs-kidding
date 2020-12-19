@@ -26,6 +26,7 @@ export default class UserService {
 
   updateUser(user: User): User {
     if (this.isUserExist(user.id) === false) {
+      // how about creating a custom validator (using class-validator)?
       throw new NotFoundException('User not found');
     }
     // TODO what about username hijacking?
