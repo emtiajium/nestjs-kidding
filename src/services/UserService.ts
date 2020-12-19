@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import * as uuid from 'uuid';
 import User from '@/data-transfer-object/UserDto';
 import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
 
+let userData =  users
 @Injectable()
 export default class UserService {
   constructor(private readonly emailService: EmailService) {}
@@ -20,5 +21,22 @@ export default class UserService {
     };
     users.push(newUser);
     return newUser;
+  }
+
+  async updateUser(id: string, user: User): Promise<User> {
+    const targetUser = await users.find(dbUser => dbUser.id === id);
+    if (!targetUser) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST) 
+    }
+    return targetUser;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const targetUser = await users.find(dbUser => dbUser.id === id);
+    if (!targetUser) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    const userIndex = users.findIndex(user => user.id === id);
+    await users.splice(userIndex, 1);
   }
 }
