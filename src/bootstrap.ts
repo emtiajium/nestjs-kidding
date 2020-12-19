@@ -2,8 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import HelloModule from '@/modules/HelloModule';
 import UserModule from '@/modules/UserModule';
+import AppModule from '@/AppModule';
 
-type Module = AppendMode | HelloModule | UserModule;
+type Module = AppModule | HelloModule | UserModule;
 
 async function bootstrap(module: Module, port = 0): Promise<INestApplication> {
   const app: INestApplication = await NestFactory.create(module);
