@@ -76,6 +76,8 @@ describe('/users', () => {
         .expect(500);
     });
 
+    // TODO add test case for 409 Conflict
+
     it('should return 201 CREATED When username is an email', () => {
       const numberOfUsersBeforeMakingRequest = findAllUsers().length;
       const sendEmailMock = mockSendEmail();
@@ -121,6 +123,8 @@ describe('/users', () => {
         .expect(404)
         .expect(response => response.body.message === 'User not found');
     });
+
+    // TODO add test case for 409 Conflict
 
     it('SHOULD return 200 OK When provided payload is okay', async () => {
       const payload = {
