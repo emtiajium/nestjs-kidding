@@ -5,6 +5,7 @@ import UserRepository from '@/mocks/UserRepository';
 
 @Injectable()
 export default class UserService {
+  // how can it be avoided?
   private readonly userRepository: UserRepository = new UserRepository();
 
   constructor(private readonly emailService: EmailService) {}
