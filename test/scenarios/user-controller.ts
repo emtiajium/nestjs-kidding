@@ -100,10 +100,10 @@ describe('/users', () => {
       return request(app.getHttpServer())
         .put(`/users/${targetUser.id}`)
         .send(payload)
-        .expect(404)
+        .expect(409)
         .expect(response => {
           const errorDetail = response.body;
-          expect(errorDetail.statusCode).toBe(404);
+          expect(errorDetail.statusCode).toBe(409);
           expect(errorDetail.message).toEqual('Username already exists');
         });
     });
@@ -115,10 +115,10 @@ describe('/users', () => {
       return request(app.getHttpServer())
         .put(`/users/${uuid.v4()}`)
         .send(payload)
-        .expect(400)
+        .expect(404)
         .expect(response => {
           const errorDetail = response.body;
-          expect(errorDetail.statusCode).toBe(400);
+          expect(errorDetail.statusCode).toBe(404);
           expect(errorDetail.message).toEqual('User not found');
         });
     });
