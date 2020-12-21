@@ -25,12 +25,12 @@ export default class UserService {
   async updateUser(userId: string, user: User): Promise<User> {
     const targetUser = await users.find(dbUser => dbUser.id === userId);
     if (!targetUser) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     const usernameCheck = await users.find(dbUser => dbUser.username === user.username && dbUser.id !== userId);
     if (usernameCheck) {
-      throw new HttpException('Username already exists', HttpStatus.NOT_FOUND);
+      throw new HttpException('Username already exists', HttpStatus.CONFLICT);
     }
     targetUser.username = user.username;
     return targetUser;
@@ -39,7 +39,7 @@ export default class UserService {
   async deleteUser(userId: string): Promise<void> {
     const targetUser = await users.find(dbUser => dbUser.id === userId);
     if (!targetUser) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     const userIndex = users.findIndex(user => user.id === userId);
     await users.splice(userIndex, 1);
