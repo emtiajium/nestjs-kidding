@@ -1,6 +1,10 @@
+language: node_js
+node_js:
+  - 14.10.0
+install:
+  - npm install
 scripts:
   - node -v
-  - npm install
   - npm run lint:check
   - npm run build
   - npm run test
