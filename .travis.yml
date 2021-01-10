@@ -1,4 +1,5 @@
 scripts:
+  - node -v
   - npm install
   - npm run lint:check
   - npm run build
