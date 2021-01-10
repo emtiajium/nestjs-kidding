@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 14.10.0
+install:
+  - npm install
+scripts:
+  # ESLint
+  - npm run lint:check
+  # Automated Test
+  - npm run test
+  # Build
+  - npm run build
