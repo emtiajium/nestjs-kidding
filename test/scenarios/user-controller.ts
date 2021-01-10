@@ -3,6 +3,10 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import EmailService from '@/services/EmailService';
 import bootstrap from '@/bootstrap';
+import * as uuid from 'uuid';
+import users from '@/mocks/users';
+
+const randomUserId = uuid.v4();
 
 describe('/users', () => {
   let app: INestApplication;
@@ -61,6 +65,67 @@ describe('/users', () => {
           expect(user).toBeDefined();
           expect(user.id).toBeDefined();
           sendEmailMock.mockRestore();
+        });
+    });
+  });
+
+  describe('PUT /:userId', () => {
+    const userIndex = 0;
+    const userId = users[userIndex].id;
+
+    it('should return 400 BAD REQUEST When username is not an email', () => {
+      const payload = {
+        username: 'hello',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${userId}`)
+        .send(payload)
+        .expect(400);
+    });
+
+    it('should return 404 NOT FOUND When userId is not present in database', () => {
+      const payload = {
+        username: 'hello@example.com',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${randomUserId}`)
+        .send(payload)
+        .expect(404);
+    });
+
+    it('should return 200 OK When username is an email & userId is present in database', () => {
+      const payload = {
+        username: 'hello@example.com',
+      };
+      return request(app.getHttpServer())
+        .put(`/users/${userId}`)
+        .send(payload)
+        .expect(200)
+        .expect(({ body: user }) => {
+          expect(user).toBeDefined();
+          expect(user.id).toBe(userId);
+          expect(user.username).toBe(payload.username);
+        });
+    });
+  });
+
+  describe('DELETE /:userId', () => {
+    const userIndex = 1;
+    const userId = users[userIndex].id;
+    const { username } = users[userIndex];
+
+    it('should return 404 NOT FOUND When userId is not present in database', () => {
+      return request(app.getHttpServer())
+        .delete(`/users/${randomUserId}`)
+        .expect(404);
+    });
+
+    it('should return 200 OK When userId is present in database', () => {
+      return request(app.getHttpServer())
+        .delete(`/users/${userId}`)
+        .expect(200)
+        .expect(response => {
+          expect(response.text).toBe(`${username} has been deleted`);
         });
     });
   });
