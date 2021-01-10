@@ -4,9 +4,9 @@ node_js:
 install:
   - npm install
 scripts:
-  - echo ESLint
+  # ESLint
   - npm run lint:check
-  - echo Automated Test
+  # Automated Test
   - npm run test
-  - echo Build
+  # Build
   - npm run build
