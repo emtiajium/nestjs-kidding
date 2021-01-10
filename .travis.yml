@@ -4,7 +4,9 @@ node_js:
 install:
   - npm install
 scripts:
-  - node -v # just to make sure it installs my preferred version
+  - echo ESLint
   - npm run lint:check
-  - npm run build
+  - echo Automated Test
   - npm run test
+  - echo Build
+  - npm run build
