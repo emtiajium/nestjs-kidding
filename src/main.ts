@@ -1,4 +1,6 @@
 import bootstrap from '@/bootstrap';
 import AppModule from '@/AppModule';
 
-bootstrap(AppModule);
+const PORT = 9876;
+
+bootstrap(AppModule, PORT);

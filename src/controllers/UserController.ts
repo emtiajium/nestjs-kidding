@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import UserService from '@/services/UserService';
 import User from '@/data-transfer-object/UserDto';
 import Logged from '@/logger/logged';
@@ -18,5 +18,18 @@ export default class UserController {
   @Logged()
   async createUser(@Body() user: User): Promise<User> {
     return this.userService.createUser(user);
+  }
+
+  @Put('/:userId')
+  updateUser(@Param('userId') userId: string, @Body() user: User): User {
+    return this.userService.updateUser({
+      ...user,
+      id: userId,
+    });
+  }
+
+  @Delete('/:userId')
+  removeUser(@Param('userId') userId: string): void {
+    return this.userService.removeUser(userId);
   }
 }

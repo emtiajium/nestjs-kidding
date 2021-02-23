@@ -1,6 +1,9 @@
 import * as sgMail from '@sendgrid/mail';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import Email from '@/data-transfer-object/EmailDto';
+
+// TODO adapter + service
+// service should be blind of Sendgrid
 
 @Injectable()
 export default class EmailService {
@@ -12,10 +15,10 @@ export default class EmailService {
     try {
       await sgMail.send(email);
     } catch (error) {
-      if (error.response) {
-        throw new Error(`Email error: ${error.response.body.errors[0].message}`);
-      }
-      throw new Error(`Email error: ${error.message}`);
+      // TODO EmailException
+      throw new InternalServerErrorException([
+        `Email error: ${error.response?.body?.errors[0]?.message || error.message}`,
+      ]);
     }
     return true;
   }

@@ -1,12 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import HelloModule from '@/modules/HelloModule';
+import UserModule from '@/modules/UserModule';
+import AppModule from '@/AppModule';
 
-const PORT = 0;
-async function bootstrap(module: any): Promise<INestApplication> {
+type Module = AppModule | HelloModule | UserModule;
+
+async function bootstrap(module: Module, port = 0): Promise<INestApplication> {
   const app: INestApplication = await NestFactory.create(module);
   // to avoid putting @UsePipes(new ValidationPipe()) at every route
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(PORT);
+  await app.listen(port);
   const url = await app.getUrl();
   console.log(`URL: ${url.replace('[::1]', 'localhost')}`);
   return app;

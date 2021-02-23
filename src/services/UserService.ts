@@ -1,24 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import * as uuid from 'uuid';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import User from '@/data-transfer-object/UserDto';
-import users from '@/mocks/users';
 import EmailService from '@/services/EmailService';
+import UserRepository from '@/mocks/UserRepository';
 
 @Injectable()
 export default class UserService {
+  // how can it be avoided? [open question]
+  private readonly userRepository: UserRepository = new UserRepository();
+
   constructor(private readonly emailService: EmailService) {}
 
   async getUsers(): Promise<User[]> {
-    return users;
+    return this.userRepository.getAllUsers();
   }
 
   async createUser(user: User): Promise<User> {
+    // TODO add validation to avoid multiple users with same username
     await this.emailService.sendAccountOpeningEmail(user.username);
-    const newUser = {
-      ...user,
-      id: uuid.v4(),
-    };
-    users.push(newUser);
-    return newUser;
+    return this.userRepository.addUser(user);
+  }
+
+  private isUserExist(userId: string): boolean {
+    return !!this.userRepository.findUser(userId);
+  }
+
+  updateUser(user: User): User {
+    if (this.isUserExist(user.id) === false) {
+      // how about creating a custom validator (using class-validator)?
+      throw new NotFoundException('User not found');
+    }
+    // TODO what about username hijacking?
+    return this.userRepository.updateUser(user);
+  }
+
+  removeUser(userId: string): void {
+    if (this.isUserExist(userId) === false) {
+      throw new NotFoundException('User not found');
+    }
+    this.userRepository.removeUser(userId);
   }
 }
